@@ -17,11 +17,13 @@ namespace TestDotNetCoreApp.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public AccountController(SignInManager<ApplicationUser> signInManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             this._signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [Route("login"), HttpPost]
@@ -30,16 +32,18 @@ namespace TestDotNetCoreApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = loginInfo.UserName.Equals("test1") && loginInfo.Password.Equals("test2");//await _signInManager.PasswordSignInAsync(loginInfo.UserName, loginInfo.Password, isPersistent: false, lockoutOnFailure: false);
+                var result = loginInfo.UserName.Equals("test1") && loginInfo.Password.Equals("test2");
                 if (result)
                 {
+                    var user = await _userManager.FindByNameAsync(loginInfo.UserName);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.PasswordSignInAsync(loginInfo.UserName, loginInfo.Password, isPersistent: false, lockoutOnFailure: false);
                     return Json("OK");
                 }
-
-                return BadRequest();
+                
             }
-
-            return BadRequest();
+            ModelState.AddModelError("login", "Неверная комбинация логина и пароля");
+            return new BadRequestObjectResult(ModelState);
         }
 
         [Route("logoff"), HttpPost]

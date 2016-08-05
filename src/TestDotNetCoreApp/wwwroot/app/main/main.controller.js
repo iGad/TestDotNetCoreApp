@@ -14,7 +14,6 @@
 
         $http.get("api/addressbook/getAll").then(function(response) {
             vm.records = response.data;
-            var i = 0;
         });
     }
 })();

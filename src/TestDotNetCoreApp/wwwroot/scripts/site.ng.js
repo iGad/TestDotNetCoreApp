@@ -59,11 +59,11 @@
             } else if (originalData.success === false) {
                 var messagePromise = null;
 
-                if (originalData.error) {
-                    messagePromise = site.ng.http.showError(originalData.error);
-                } else {
-                    originalData.error = defaultError;
-                }
+                //if (originalData.error) {
+                //    messagePromise = site.ng.http.showError(originalData.error);
+                //} else {
+                //    originalData.error = defaultError;
+                //}
 
                 site.ng.http.logError(originalData.error);
 
@@ -123,11 +123,9 @@
                         if (ngError.status === 401) {
                             auth0.clear();
                             state.go("login");
-                        } else {
-                            site.ng.http.showError(error);
                         }
 
-                        return $q.reject(ngError);
+                        return ngError; //$q.reject(ngError);
                     }
 
                 };

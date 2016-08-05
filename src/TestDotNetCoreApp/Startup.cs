@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,7 +52,15 @@ namespace TestDotNetCoreApp
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 });
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                options.Password = new PasswordOptions
+                {
+                    RequireDigit = true,
+                    RequiredLength = 4,
+                    RequireLowercase = true,
+                    RequireNonAlphanumeric = false,
+                    RequireUppercase = false
+                })
                 .AddEntityFrameworkStores<TestAppContext>()
                 .AddDefaultTokenProviders();
         }
@@ -71,17 +81,72 @@ namespace TestDotNetCoreApp
             app.UseMvc();
 
             AddSampleUser(app.ApplicationServices).Wait();
+            
+
         }
 
         private static async Task AddSampleUser(IServiceProvider provider)
         {
-            var userManager = provider.GetService<UserManager<ApplicationUser>>();
-                
-            var testUser = new ApplicationUser
+            using (var dbContext = provider.GetService<TestAppContext>())
             {
-                UserName = "test1"
-            };
-            await userManager.CreateAsync(testUser, "test2");
+                var sqlServerDatabase = dbContext.Database;
+                if (sqlServerDatabase != null)
+                {
+                    // Create database in user root (c:\users\your name)
+                    if (await sqlServerDatabase.EnsureCreatedAsync())
+                    {
+                        var records = new List<AddressBook>
+                        {
+                            new AddressBook
+                            {
+                                FIO = "Петров Петр",
+                                Email = "ghsdf@afs.com",
+                                Phone = "58923458234",
+                                Position = "Уборщик",
+                                Subdivision = "Первое"
+                            },
+                            new AddressBook
+                            {
+                                FIO = "Иванов Иван",
+                                Email = "ivan@ivan.ru",
+                                Phone = "89013238432",
+                                Position = "Менеджер",
+                                Subdivision = "Первое"
+                            },
+                            new AddressBook
+                            {
+                                FIO = "Сидоров Семён",
+                                Email = "sido@gmail.com",
+                                Phone = "89084326754",
+                                Position = "Слесарь",
+                                Subdivision = "Второе"
+                            }
+                        };
+                        
+                        dbContext.AddressBook.AddRange(records);
+                        
+                        // add some users
+                        var userManager = provider.GetService<UserManager<ApplicationUser>>();
+                        
+                        // add editor user
+                        var testUser = new ApplicationUser
+                        {
+                            UserName = "test1"
+                        };
+                        var result = await userManager.CreateAsync(testUser, "test2");
+                        dbContext.SaveChanges(true);
+                    }
+
+                }
+            }
+
+            //var userManager = provider.GetService<UserManager<ApplicationUser>>();
+                
+            //var testUser = new ApplicationUser
+            //{
+            //    UserName = "test1"
+            //};
+            //await userManager.CreateAsync(testUser, "test2");
                 
         }
     }

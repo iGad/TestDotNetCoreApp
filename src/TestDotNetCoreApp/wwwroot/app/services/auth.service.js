@@ -19,7 +19,7 @@
 
         function login(userInfo, callback) {
             $http.post('/api/account/login', JSON.stringify(userInfo))
-                .success(function (response) {
+                .then(function (response) {
                     callback(response);
                 });
         }

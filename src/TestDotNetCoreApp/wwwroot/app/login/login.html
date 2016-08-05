@@ -2,11 +2,16 @@
     <div class="row">
         <div class="col-sm-6 col-md-4 col-md-offset-4">
             <h1 class="text-center login-title">Вход</h1>
+            <div class="bg-danger validationErrors" ng-show="validationErrors">
+                <ul>
+                    <li ng-repeat="error in validationErrors">{{error}}</li>
+                </ul>
+            </div> 
             <div class="account-wall">
                 <form class="form-signin">
-                    <input type="text" ng-keyup="userNameEmpty = loginCtrl.loginInfo.UserName == ''" ng-model="loginCtrl.loginInfo.UserName" class="form-control" placeholder="Имя пользователя" required autofocus>
-                    <input type="password" ng-keyup="passwordEmpty = loginCtrl.loginInfo.Password == ''" ng-model="loginCtrl.loginInfo.Password" class="form-control" placeholder="Пароль" required>
-                    <input class="btn btn-lg btn-primary btn-block" type="button" ng-click="loginCtrl.login()" ng-hide="true" value="Войти" />
+                    <input type="text" ng-change="loginCtrl.updateHideButton()" ng-model="loginCtrl.loginInfo.UserName" class="form-control" placeholder="Имя пользователя" required autofocus>
+                    <input type="password" ng-change="loginCtrl.updateHideButton()" ng-model="loginCtrl.loginInfo.Password" class="form-control" placeholder="Пароль" required>
+                    <input class="btn btn-lg btn-primary btn-block" type="button" ng-click="loginCtrl.login()" ng-hide="loginCtrl.hideButton" value="Войти" />
                 </form>
             </div>
         </div>

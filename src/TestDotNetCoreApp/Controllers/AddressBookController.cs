@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TestDotNetCoreApp.Models;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TestDotNetCoreApp.Controllers
 {
-    [Produces("application/json")]
+    
     [Route("api/addressbook")]
-   // [Authorize]
+    [Authorize]
     public class AddressBookController : Controller
     {
         private readonly TestAppContext _context;
@@ -21,19 +22,24 @@ namespace TestDotNetCoreApp.Controllers
         {
             this._context = context;
         }
-
-        // GET: api/values
+        
         [Route("getAll"), HttpGet]
+        [Produces("application/json")]
         public IEnumerable<AddressBook> Get()
         {
             var records = this._context.AddressBook.OrderBy(abr => abr.Subdivision);
             return records;
         }
 
-        [Route("getrecord"), HttpGet]
-        public IActionResult Get(int id)
+        [Route("getRecord"), HttpGet]
+        [Produces("application/xml")]
+        public string Get(int id)
         {
-            return Json(this._context.AddressBook.FirstOrDefault(abr => abr.Id == id));
+            var serializer = new XmlSerializer(typeof(AddressBook));
+            StringWriter writer = new StringWriter();
+            var record = (this._context.AddressBook.FirstOrDefault(abr => abr.Id == id));
+            serializer.Serialize(writer, record);
+            return writer.ToString();
         }
 
         
