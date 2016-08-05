@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "name": "tdnca",
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-inject": "^4.1.0",
+    "stream-series": "^0.1.1",
+    "wiredep": "^4.0.0"
+  }
+}

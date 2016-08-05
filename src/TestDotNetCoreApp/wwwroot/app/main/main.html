@@ -1,0 +1,21 @@
+﻿<h2>Список записей</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Телефон</th>
+            <th>Эл. Почта</th>
+            <th>Подразделение</th>
+            <th>Должность</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="record in addressbookCtrl.records">
+        <td>{{record.fio}}</td>
+        <td>{{record.phone}}</td>
+        <td>{{record.email}}</td>
+        <td>{{record.subdivision}}</td>
+        <td>{{record.position}}</td>
+    </tr>
+    </tbody>
+</table>
