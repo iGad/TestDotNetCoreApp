@@ -13,8 +13,8 @@
         vm.hideButton = true;
 
         vm.loginInfo = {
-            UserName: "",//"test1",
-            Password: ""//"test2"
+            UserName: "",
+            Password: ""
         };
 
         vm.login = function () {

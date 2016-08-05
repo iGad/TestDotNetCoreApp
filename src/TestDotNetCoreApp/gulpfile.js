@@ -31,5 +31,5 @@ gulp.task('inject:index', function () {
         }))
         .pipe(inject(series(scriptSrc, moduleSrc, routeSrc, controllerSrc), { ignorePath: '/wwwroot' }))
         .pipe(inject(series(styleSrc), { ignorePath: '/wwwroot' }))
-        .pipe(gulp.dest(webroot + 'app'));
+        .pipe(gulp.dest(webroot));
 });
